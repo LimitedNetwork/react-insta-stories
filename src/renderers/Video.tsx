@@ -35,14 +35,17 @@ export const renderer: Renderer = ({
   const onEnded = (storyDuration: number | undefined) => {
     if (vid.current && typeof storyDuration === "number") {
       vid.current.currentTime = 0;
-      vid.current.play().then(function () {
-        action("play", true);
-      })["catch"](function () {
-        setMuted(true);
-        vid.current.play()["finally"](function () {
-              action("play", true);
-            });
-      });
+
+      vid.current?.play()
+        .then(() => {
+          action("play", true);
+        })
+        .catch(() => {
+          setMuted(true);
+          vid.current?.play().finally(() => {
+            action("play", true);
+          });
+        });
     }
   };
 
