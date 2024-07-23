@@ -70,7 +70,7 @@ export default () => {
   };
 
   const getCurrentInterval = () => {
-    if (stories[currentId].type === "video") return videoDuration;
+    if (stories[currentId].type === "video" && typeof stories[currentId].duration !== "number") return videoDuration;
     if (typeof stories[currentId].duration === "number")
       return stories[currentId].duration;
     return defaultInterval;

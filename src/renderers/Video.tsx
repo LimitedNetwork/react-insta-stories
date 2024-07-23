@@ -32,8 +32,24 @@ export const renderer: Renderer = ({
     }
   }, [isPaused]);
 
+  const onEnded = (storyDuration: number | undefined) => {
+    if (vid.current && typeof storyDuration === "number") {
+      vid.current.currentTime = 0;
+      vid.current.play().then(function () {
+        action("play", true);
+      })["catch"](function () {
+        setMuted(true);
+        vid.current.play()["finally"](function () {
+              action("play", true);
+            });
+      });
+    }
+  };
+
   const onWaiting = () => {
-    action("pause", true);
+    if (vid.current?.currentTime === vid.current?.duration) {
+      action("pause", true);
+    }
   };
 
   const onPlaying = () => {
@@ -69,6 +85,7 @@ export const renderer: Renderer = ({
             playsInline
             onWaiting={onWaiting}
             onPlaying={onPlaying}
+            onEnded={() => onEnded(story.duration)}
             muted={muted}
             autoPlay
             webkit-playsinline="true"
