@@ -8,11 +8,17 @@ import { renderers as defaultRenderers } from './renderers/index';
 import withHeader from './renderers/wrappers/withHeader'
 import withSeeMore from './renderers/wrappers/withSeeMore'
 
-const ReactInstaStories = function (props: ReactInstaStoriesProps) {
+const ReactInstaStories = function ({
+        width = 360,
+        height = 640,
+        defaultInterval = 4000,
+        preloadCount = 1,
+        ...props
+    }: ReactInstaStoriesProps) {
     let renderers = props.renderers ? props.renderers.concat(defaultRenderers) : defaultRenderers;
     let context: GlobalCtx = {
-        width: props.width,
-        height: props.height,
+        width: width,
+        height: height,
         loader: props.loader,
         header: props.header,
         storyContainerStyles: props.storyContainerStyles,
@@ -22,7 +28,7 @@ const ReactInstaStories = function (props: ReactInstaStoriesProps) {
         progressWrapperStyles: props.progressWrapperStyles,
         progressStyles: props.progressStyles,
         loop: props.loop,
-        defaultInterval: props.defaultInterval,
+        defaultInterval: defaultInterval,
         isPaused: props.isPaused,
         currentIndex: props.currentIndex,
         onStoryStart: props.onStoryStart,
@@ -32,7 +38,7 @@ const ReactInstaStories = function (props: ReactInstaStoriesProps) {
         onPrevious: props.onPrevious,
         keyboardNavigation: props.keyboardNavigation,
         preventDefault: props.preventDefault,
-        preloadCount: props.preloadCount,
+        preloadCount: preloadCount,
     }
     const [stories, setStories] = useState<{ stories: Story[] }>({ stories: generateStories(props.stories, renderers) });
 
@@ -65,13 +71,6 @@ const generateStories = (stories: Story[], renderers: { renderer: Renderer, test
         return story
     })
 };
-
-ReactInstaStories.defaultProps = {
-    width: 360,
-    height: 640,
-    defaultInterval: 4000,
-    preloadCount: 1,
-}
 
 export const WithHeader = withHeader;
 export const WithSeeMore = withSeeMore;
