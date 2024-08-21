@@ -150,6 +150,19 @@ export default function () {
     setVideoDuration(duration * 1000);
   };
 
+  const divRef = useRef(null);
+  const handleClick = (event) => {
+    const divWidth = divRef.current.getBoundingClientRect().width;
+    const halfDivWidth = divWidth / 2;
+    const mouseXPos = event.nativeEvent.offsetX;
+
+    if (mouseXPos <= halfDivWidth) {
+      mouseUp("previous")(event)
+    } else {
+      mouseUp("next")(event)
+    }
+  };
+
   return (
     <div
       style={{
@@ -157,43 +170,34 @@ export default function () {
         ...storyContainerStyles,
         ...{ width, height },
       }}
+      {
+        ...(!preventDefault && {
+          onTouchStart: debouncePause,
+          onTouchEnd: (event) => handleClick(event),
+          onMouseDown: debouncePause,
+          onMouseUp: (event) => handleClick(event),
+        })
+      }
+      ref={divRef}
     >
-      <ProgressContext.Provider
-        value={{
-          bufferAction: bufferAction,
-          videoDuration: videoDuration,
-          currentId,
-          pause,
-          next,
-        }}
-      >
-        <ProgressArray />
-      </ProgressContext.Provider>
-      <Story
-        action={toggleState}
-        bufferAction={bufferAction}
-        playState={pause}
-        story={stories[currentId]}
-        getVideoDuration={getVideoDuration}
-      />
-      {!preventDefault && (
-        <div style={styles.overlay}>
-          <div
-            style={{ width: "50%", zIndex: 999 }}
-            onTouchStart={debouncePause}
-            onTouchEnd={mouseUp("previous")}
-            onMouseDown={debouncePause}
-            onMouseUp={mouseUp("previous")}
-          />
-          <div
-            style={{ width: "50%", zIndex: 999 }}
-            onTouchStart={debouncePause}
-            onTouchEnd={mouseUp("next")}
-            onMouseDown={debouncePause}
-            onMouseUp={mouseUp("next")}
-          />
-        </div>
-      )}
+        <ProgressContext.Provider
+          value={{
+            bufferAction: bufferAction,
+            videoDuration: videoDuration,
+            currentId,
+            pause,
+            next,
+          }}
+        >
+          <ProgressArray />
+        </ProgressContext.Provider>
+        <Story
+          action={toggleState}
+          bufferAction={bufferAction}
+          playState={pause}
+          story={stories[currentId]}
+          getVideoDuration={getVideoDuration}
+        />
     </div>
   );
 }

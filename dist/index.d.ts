@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactInstaStoriesProps, Story } from './interfaces';
-declare const ReactInstaStories: ({ width, height, defaultInterval, preloadCount, ...props }: ReactInstaStoriesProps) => JSX.Element;
+declare const ReactInstaStories: ({ width, height, defaultInterval, preloadCount, ...props }: ReactInstaStoriesProps) => React.JSX.Element;
 export declare const WithHeader: React.FC<React.PropsWithChildren<{
     story: Story;
     globalHeader: Function;
